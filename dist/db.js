@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContetModel = exports.UserModel = void 0;
+exports.ContetModel = exports.LinkModel = exports.UserModel = void 0;
 //create user models and schemas
 const mongoose_1 = __importStar(require("mongoose"));
 mongoose_1.default
@@ -50,5 +50,15 @@ const ContenSchema = new mongoose_1.Schema({
     tags: [{ type: mongoose_1.default.Types.ObjectId, ref: "Tag" }],
     userId: { type: mongoose_1.default.Types.ObjectId, ref: "User", required: true },
 });
+const LinkSchema = new mongoose_1.Schema({
+    hash: String,
+    userId: {
+        type: mongoose_1.default.Types.ObjectId,
+        ref: "User",
+        required: true,
+        unique: true,
+    },
+});
 exports.UserModel = mongoose_1.default.model("User", UserSchema);
+exports.LinkModel = mongoose_1.default.model("Links", LinkSchema);
 exports.ContetModel = mongoose_1.default.model("Content", ContenSchema);
