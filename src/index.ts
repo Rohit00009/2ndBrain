@@ -7,9 +7,11 @@ import bcrypt from "bcryptjs";
 import { ContetModel, LinkModel, UserModel } from "./db";
 import { userMiddleware } from "./middleware";
 import { random } from "./util";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const userSchema = z.object({
   username: z.string().min(3),
@@ -82,11 +84,12 @@ app.post("/api/v1/signin", async (req, res) => {
   }
 });
 
-app.post("/api/v1/content", userMiddleware, (req, res) => {
-  const { link, title } = req.body;
-  ContetModel.create({
-    title: title,
-    link: link,
+app.post("/api/v1/content", userMiddleware, async (req, res) => {
+  const { link, title, type } = req.body;
+  await ContetModel.create({
+    type,
+    link,
+    title,
     //@ts-ignore
     userId: req.userId,
     tags: [],
@@ -142,7 +145,7 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
     });
 
     res.json({
-      message: "/share/" + hash,
+      hash: hash,
     });
   } else {
     await LinkModel.deleteOne({

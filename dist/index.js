@@ -20,8 +20,10 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = require("./db");
 const middleware_1 = require("./middleware");
 const util_1 = require("./util");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+app.use((0, cors_1.default)());
 const userSchema = zod_1.z.object({
     username: zod_1.z.string().min(3),
     password: zod_1.z.string().min(6),
@@ -77,11 +79,12 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).json({ error: "Internal server error" });
     }
 }));
-app.post("/api/v1/content", middleware_1.userMiddleware, (req, res) => {
-    const { link, title } = req.body;
-    db_1.ContetModel.create({
-        title: title,
-        link: link,
+app.post("/api/v1/content", middleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { link, title, type } = req.body;
+    yield db_1.ContetModel.create({
+        type,
+        link,
+        title,
         //@ts-ignore
         userId: req.userId,
         tags: [],
@@ -89,7 +92,7 @@ app.post("/api/v1/content", middleware_1.userMiddleware, (req, res) => {
     return res.json({
         message: "Content Added!",
     });
-});
+}));
 app.get("/api/v1/content", middleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //@ts-ignore
     const userId = req.userId;
@@ -131,7 +134,7 @@ app.post("/api/v1/brain/share", middleware_1.userMiddleware, (req, res) => __awa
             hash: hash,
         });
         res.json({
-            message: "/share/" + hash,
+            hash,
         });
     }
     else {
