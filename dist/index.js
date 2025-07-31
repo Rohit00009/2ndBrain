@@ -134,7 +134,7 @@ app.post("/api/v1/brain/share", middleware_1.userMiddleware, (req, res) => __awa
             hash: hash,
         });
         res.json({
-            hash,
+            hash: hash,
         });
     }
     else {
