@@ -1,14 +1,19 @@
 //create user models and schemas
 import mongoose, { model, Schema } from "mongoose";
-import { string } from "zod";
+import dotenv from "dotenv"; 
 
+
+dotenv.config(); // <-- This must run BEFORE using process.env
+
+const uri = process.env.MONGO_URI;
+
+if (!uri) {
+  throw new Error("MONGO_URI is not defined in .env");
+}
 mongoose
-  .connect(
-    "mongodb+srv://admin:5hURWwyBDvxuTikf@cluster0.cm424xg.mongodb.net/2ndBrain"
-  )
+  .connect(uri)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
-
 const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },

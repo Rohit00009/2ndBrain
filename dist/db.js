@@ -32,12 +32,21 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContetModel = exports.LinkModel = exports.UserModel = void 0;
 //create user models and schemas
 const mongoose_1 = __importStar(require("mongoose"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config(); // <-- This must run BEFORE using process.env
+const uri = process.env.MONGO_URI;
+if (!uri) {
+    throw new Error("MONGO_URI is not defined in .env");
+}
 mongoose_1.default
-    .connect("mongodb+srv://admin:5hURWwyBDvxuTikf@cluster0.cm424xg.mongodb.net/2ndBrain")
+    .connect(uri)
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.error("MongoDB connection error:", err));
 const UserSchema = new mongoose_1.Schema({
